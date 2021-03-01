@@ -26,32 +26,30 @@ def Edge():
 #    print("m=")
 #    print(m)
     for a in range(m):
-        #print(a)
         degree[-1] += 1
+
         # For each node i, define a probability of an end attaching, prob
         prob = np.array(degree[:-1])/(sum(degree[:-1]))
         prob = prob.tolist()
         Exist_ver = np.random.choice(vertices[:-1], p = prob)
         #print(sum(prob))
+
         if a >= 1:
-#            Truth_Arr = Exist_ver == np.array(vertex_con[-1])
-#            while np.any(Truth_Arr) == True:
-#                Exist_ver = np.random.choice(vertices[:-1], p = prob)
 #        """ Probability not working properly - needs to be a separate probability 
 #        for each of the nodes bar the newest """
             while np.any(Exist_ver == np.array(vertex_con[-1])) == True:
                 Exist_ver = np.random.choice(vertices[:-1], p = prob)
-#        else:
-#            continue 
+
         # Adds the index of the existing vertex to the list of new vertex connections
         vertex_con[-1].append(Exist_ver)  
         # Adds the index of the new vertex to the list of existing vertex connections              
         vertex_con[Exist_ver-1].append(vertices[-1])
         degree[Exist_ver-1] += 1
-        """ Double connects to vertices - always one after each other so its 
-        due to the first edge ( of the three) connecting, and then the subsequent 
-        edges do not know NOT to connect to that same vertex, hence the double or 
-        triple connection """
+        
+#        """ Double connects to vertices - always one after each other so its 
+#        due to the first edge ( of the three) connecting, and then the subsequent 
+#        edges do not know NOT to connect to that same vertex, hence the double or 
+#        triple connection """
 #        """ Need to add Exist_ver to the list of vertex connections for the NEW vertex, 
 #        and add the NEW vertex to the list of vertex connections for the Exist_ver vertex. """
 
