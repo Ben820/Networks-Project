@@ -26,17 +26,27 @@ def Edge():
 #    print("m=")
 #    print(m)
     for a in range(m):
+        #print(a)
         degree[-1] += 1
         # For each node i, define a probability of an end attaching, prob
         prob = np.array(degree[:-1])/(sum(degree[:-1]))
         prob = prob.tolist()
         Exist_ver = np.random.choice(vertices[:-1], p = prob)
-        print(prob)
+        #print(sum(prob))
+        if a >= 1:
+#            Truth_Arr = Exist_ver == np.array(vertex_con[-1])
+#            while np.any(Truth_Arr) == True:
+#                Exist_ver = np.random.choice(vertices[:-1], p = prob)
 #        """ Probability not working properly - needs to be a separate probability 
 #        for each of the nodes bar the newest """
-        vertex_con[-1].append(Exist_ver)
+            while np.any(Exist_ver == np.array(vertex_con[-1])) == True:
+                Exist_ver = np.random.choice(vertices[:-1], p = prob)
+#        else:
+#            continue 
+        # Adds the index of the existing vertex to the list of new vertex connections
+        vertex_con[-1].append(Exist_ver)  
+        # Adds the index of the new vertex to the list of existing vertex connections              
         vertex_con[Exist_ver-1].append(vertices[-1])
-        #print(Exist_ver)
         degree[Exist_ver-1] += 1
         """ Double connects to vertices - always one after each other so its 
         due to the first edge ( of the three) connecting, and then the subsequent 
@@ -52,8 +62,8 @@ def A(Iterations):
 #%%
 # Initialisation
 N = 3
-vertex = np.array([0])
-time = np.array([0])
+vertex = np.array([N])
+time = np.array([N])
 edges = []
 
 vertices = [1,2,3]
@@ -62,6 +72,6 @@ vertex_con = [[2,3], [1,3], [1,2]]
 Data = [vertices, degree, vertex_con]
 #%%
 #A(50)
-A(20)
+A(10000)
 #print((sum(degree)-6)/2)
 #print(sum(edges))
