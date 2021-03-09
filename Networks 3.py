@@ -11,15 +11,15 @@ CID: 01508466
 #%% WRITE
 import pickle
 
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAAAAAA', 'wb') as dummy:
-    pickle.dump(Data, dummy, protocol=pickle.HIGHEST_PROTOCOL)
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\DataB', 'wb') as dummy:
+    pickle.dump(data, dummy, protocol=pickle.HIGHEST_PROTOCOL)
     
 #%% READ
 import pickle
-# Data100k;6
-# Data100k;10
+# Complete3m100k
+# Incompletem4100k
 # Data1.5M;2R
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAAAAAAAAA', 'rb') as dummy:
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Complete3m100k', 'rb') as dummy:
     dataA = pickle.load(dummy)
 
 #%%
@@ -27,7 +27,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as opt
 from collections import Counter
-##%%
+#%%
 def Increment():
     time[0] += 1
     vertex[0] += 1
@@ -42,7 +42,7 @@ def Edge():
 
         # For each node i, define a probability of an end attaching, prob
         prob = np.array(degree[:-1])/(sum(degree[:-1]))
-        prob = prob.tolist()
+        #prob = prob.tolist()
         Exist_ver = np.random.choice(vertices[:-1], p = prob)
 
         if a >= 1:
@@ -59,7 +59,7 @@ def A(Iterations):
     for b in range(Iterations):
         Increment()
         Edge()
-#%%
+##%%
 # Initialisation
 N = 4
 vertex = np.array([N])
@@ -71,14 +71,17 @@ degree = [2,2,2,2]
 vertex_con = [[2,3,4], [1,3,4], [1,2,4],[1,2,3]]
 Data = [vertices, degree, vertex_con]
 vert_list = [[],[],[],[]]
+#%%
+A(10000)
 
 #%%
 data = {}
 # R-1 is the number of separate networks simulated  
 # I is the number of single grain additions (i.e. total time)
 R = 2 
-t = 400
+t = 100000
 g = np.array([1,2,3,4])
+#g = np.array([3])
 for j in range(len(g)):
     for h in range(1,R):
         m = g[j]
@@ -103,44 +106,73 @@ for j in range(len(g)):
         Data = [vertices, degree, vertex_con]
         vert_list = [[],[],[],[]]
 # 15:43 19:28 1,1 2,1 3,1 complete; 4,1 87214/100000 process complete
-#%%
-A(100)
+# 11:11 13:39 1,1 2,1 3,1 complete; 4,1 96206/100000 process complete
 #%%
 from collections import Counter 
 
 Count = {}
 
 # The number of nodes with total degree k; degree k is the key in the dict
-Count = Counter(data[2,1][1])
 
-#for e in range(len(Count)):
-#    Count[g[e],0] = dict(Counter(dataTC[g[e]]))
-#Prob = []
-#Val = [[],[],[],[],[],[],[]]
-n = []
-k = []
-
-for e in sorted(Count.keys()):
-    #for r in sorted(Prob[g[e],0].keys()):
-    #print(e)
-    #for a in range(Count[e]):
-    n.append(Count[e]/sum(data[1,1][1]))
-    k.append(e)
-        
-#        Val[e].append(r)
-#        Prob[e].append(Prb[g[e],0][r])
-
-
-#for r in sorted(Count.values()):
+nlist = []
+klist = []
+for i in [1,2,3]:
+    # Count contains the number of nodes with degree x; key is degree and value is 
+    # the number of nodes with that degree 
+    Count = Counter(dataA[i,1][1]) # dataA[i,1][1] is the degree of each node 
+    n = []
+    k = []
     
+    for e in sorted(Count.keys()):
+        n.append(Count[e]/sum(dataA[i,1][1])) # divided by total number of nodes 
+        k.append(e)
+
+    nlist.append(n)
+    klist.append(k)
 #%%
-#plt.figure()
-plt.plot(k, n)
+""" Unbinned degree distribution; Degree probability vs degree 
+Number of nodes with degree x divided by total number of nodes vs degree """
+plt.figure()
+
+plt.plot(klist[0], nlist[0], 'x', label = "m = 1")
+plt.plot(klist[1], nlist[1], 'x', label = "m = 2")
+plt.plot(klist[2], nlist[2], 'x', label = "m = 3")
+
+plt.xlabel("Degree, $k$", size = "15")
+plt.ylabel("Degree probability, $P_\infty(k)$", size = "15")
 plt.xscale("log")
 plt.yscale("log")
+plt.legend()
+#plt.grid()
+#plt.savefig("Task 3a unbin.png", dpi = 1000)
 plt.show()
-plt.grid()
+#%%
+""" Binned degree distribution; Degree probability vs degree 
+Number of nodes with degree x divided by total number of nodes vs degree """
+plt.figure()
 
+scale = 1.3
+s0 = False # whether or not to include s = 0 avalanches 
+ 
+# Need to first run logbin file - Credit: Max Falkenberg McGillivray
+bin_k1 = logbin(dataA[1,1][1],scale, s0)
+bin_k2 = logbin(dataA[2,1][1],scale, s0)
+bin_k3 = logbin(dataA[3,1][1],scale, s0)
+
+
+plt.plot(bin_k1[0], bin_k1[1], 'x-', label = "m = 1")
+plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
+plt.plot(bin_k3[0], bin_k3[1], 'x-', label = "m = 3")
+
+
+plt.xlabel("Degree, $k$", size = "15")
+plt.ylabel("Degree probability, $P_\infty(k)$", size = "15")
+plt.xscale("log")
+plt.yscale("log")
+plt.legend()
+#plt.grid()
+#plt.savefig("Task 3a unbin.png", dpi = 1000)
+plt.show()
 #%%
 # Attachment list
 Deg = {}
