@@ -11,7 +11,7 @@ CID: 01508466
 #%% WRITE
 import pickle
 
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\DataB', 'wb') as dummy:
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAA', 'wb') as dummy:
     pickle.dump(data, dummy, protocol=pickle.HIGHEST_PROTOCOL)
     
 #%% READ
@@ -28,6 +28,7 @@ import matplotlib.pyplot as plt
 import scipy.optimize as opt
 from collections import Counter
 #%%
+""" PREFERENTIAL ATTACHMENT """
 def Increment():
     time[0] += 1
     vertex[0] += 1
@@ -71,9 +72,6 @@ degree = [2,2,2,2]
 vertex_con = [[2,3,4], [1,3,4], [1,2,4],[1,2,3]]
 Data = [vertices, degree, vertex_con]
 vert_list = [[],[],[],[]]
-#%%
-A(10000)
-
 #%%
 data = {}
 # R-1 is the number of separate networks simulated  
