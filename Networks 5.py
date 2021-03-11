@@ -29,20 +29,19 @@ import scipy.optimize as opt
 from collections import Counter
 #%%
 """ PREFERENTIAL ATTACHMENT """
+# Algorithm/ Network definitions
 def Increment():
-    time[0] += 1
-    vertex[0] += 1
-    degree.append(0)
-    vertex_con.append([])
-    vertices.append(vertices[-1] + 1)
+    degree.append(0) #!
+    vertex_con.append([]) #!
+    vertices.append(vertices[-1] + 1) #!
 
 def Edge():
 #    m = 3 # np.random.randint(0,3)
     for a in range(m):
         degree[-1] += 1
 
-        a = np.random.choice([1,2], p = [q,1-q])
-        if a == 1:
+        x = np.random.choice([1,2], p = [q,1-q])
+        if x == 1:
             # For each node i, define a probability of an end attaching, prob
             prob = np.array(degree[:-1])/(sum(degree[:-1]))
             #prob = prob.tolist()
@@ -58,7 +57,7 @@ def Edge():
             vertex_con[Exist_ver-1].append(vertices[-1])
             degree[Exist_ver-1] += 1
             
-        if a == 2:
+        if x == 2:
             Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
     
             if a >= 1:
@@ -77,31 +76,47 @@ def A(Iterations):
         Edge()
 ##%%
 # Initialisation
-N = 4
-vertex = np.array([N])
-time = np.array([N])
-edges = []
 
-vertices = [1,2,3,4]
-degree = [2,2,2,2]
-vertex_con = [[2,3,4], [1,3,4], [1,2,4],[1,2,3]]
-Data = [vertices, degree, vertex_con]
-vert_list = [[],[],[],[]]
+#vertices = [1,2,3,4]
+#degree = [3,3,3,3]
+#vertex_con = [[2,3,4], [1,3,4], [1,2,4], [1,2,3]]
+##Data = [vertices, degree, vertex_con]
+##%%
+Nn = 64 # The number of nodes in the initial graph
+vertices = [i for i in range(1,Nn+1)]
+degree = [Nn-1]*Nn
+#vertex_con = [[] for x in range(Nn)]
+vertex_con = [vertices[:x] + vertices[x+1:] for x in range(Nn)]
+
+
+#for a in range(Nn):
+#    Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
+#
+#    if a >= 1:
+#        while np.any(Exist_ver == np.array(vertex_con[-1])) == True:
+#            Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
+#
+#    # Adds the index of the existing vertex to the list of new vertex connections
+#    vertex_con[-1].append(Exist_ver)  
+#    # Adds the index of the new vertex to the list of existing vertex connections              
+#    vertex_con[Exist_ver-1].append(vertices[-1])
+#    degree[Exist_ver-1] += 1
 #%%
+# Data Collection Cell
 data = {}
 # R-1 is the number of separate networks simulated  
 # I is the number of single grain additions (i.e. total time)
 R = 2 
-t = 1000
+t = 10000
 g = np.array([1,2,3,4])
 #g = np.array([3])
 for j in range(len(g)):
     for h in range(1,R):
         m = g[j]
         # q is the probability the edge is joined using preferential attachment 
-        q = 0.5 
+        q = 1
         A(t)
-        data[g[j],h] = [vertices, degree, vertex_con]
+        data[g[j],h] = [degree, vertex_con]
         
         # Condition to handle hitting the end of the list h
         if h < R-1:
@@ -111,15 +126,16 @@ for j in range(len(g)):
                 L = g[j]
             else:
                 L = g[j+1]
-        vertex = np.array([N])
-        time = np.array([N])
-        edges = []
         
-        vertices = [1,2,3,4]
-        degree = [2,2,2,2]
-        vertex_con = [[2,3,4], [1,3,4], [1,2,4],[1,2,3]]
-        Data = [vertices, degree, vertex_con]
-        vert_list = [[],[],[],[]]
+#        vertices = [1,2,3,4]
+#        degree = [3,3,3,3]
+#        vertex_con = [[2,3,4], [1,3,4], [1,2,4],[1,2,3]]
+        vertices = [i for i in range(1,Nn+1)]
+        degree = [Nn-1]*Nn
+        vertex_con = [vertices[:x] + vertices[x+1:] for x in range(Nn)]
+
+        #Data = [degree, vertex_con]
+
 # 15:43 19:28 1,1 2,1 3,1 complete; 4,1 87214/100000 process complete
 # 11:11 13:39 1,1 2,1 3,1 complete; 4,1 96206/100000 process complete
 #%%
@@ -131,15 +147,15 @@ Count = {}
 
 nlist = []
 klist = []
-for i in [1,2,3]:
+for i in [1,2,3,4]:
     # Count contains the number of nodes with degree x; key is degree and value is 
     # the number of nodes with that degree 
-    Count = Counter(data[i,1][1]) # dataA[i,1][1] is the degree of each node 
+    Count = Counter(data[i,1][0]) # dataA[i,1][1] is the degree of each node 
     n = []
     k = []
     
     for e in sorted(Count.keys()):
-        n.append(Count[e]/sum(data[i,1][1])) # divided by total number of nodes 
+        n.append(Count[e]/sum(data[i,1][0])) # divided by total number of nodes 
         k.append(e)
 
     nlist.append(n)
@@ -152,6 +168,7 @@ plt.figure()
 plt.plot(klist[0], nlist[0], 'x', label = "m = 1")
 plt.plot(klist[1], nlist[1], 'x', label = "m = 2")
 plt.plot(klist[2], nlist[2], 'x', label = "m = 3")
+plt.plot(klist[3], nlist[3], 'x', label = "m = 3")
 
 plt.xlabel("Degree, $k$", size = "15")
 plt.ylabel("Degree probability, $P_\infty(k)$", size = "15")
@@ -170,14 +187,16 @@ scale = 1.3
 s0 = False # whether or not to include s = 0 avalanches 
  
 # Need to first run logbin file - Credit: Max Falkenberg McGillivray
-bin_k1 = logbin(data[1,1][1],scale, s0)
-bin_k2 = logbin(data[2,1][1],scale, s0)
-bin_k3 = logbin(data[3,1][1],scale, s0)
+bin_k1 = logbin(data[1,1][0],scale, s0)
+bin_k2 = logbin(data[2,1][0],scale, s0)
+bin_k3 = logbin(data[3,1][0],scale, s0)
+bin_k4 = logbin(data[4,1][0],scale, s0)
 
 
 plt.plot(bin_k1[0], bin_k1[1], 'x-', label = "m = 1")
 plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
 plt.plot(bin_k3[0], bin_k3[1], 'x-', label = "m = 3")
+plt.plot(bin_k4[0], bin_k4[1], 'x-', label = "m = 3")
 
 
 plt.xlabel("Degree, $k$", size = "15")
