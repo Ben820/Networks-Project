@@ -11,7 +11,7 @@ CID: 01508466
 #%% WRITE
 import pickle
 
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Pref248', 'wb') as dummy:
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Pref24810k64;2e', 'wb') as dummy:
     pickle.dump(data, dummy, protocol=pickle.HIGHEST_PROTOCOL)
     
 #%% READ
@@ -19,7 +19,7 @@ import pickle
 # Complete3m100k
 # Incompletem4100k
 # Data1.5M;2R
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Pref248', 'rb') as dummy:
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAAAA', 'rb') as dummy:
     data = pickle.load(dummy)
 
 #%%
@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 import scipy.optimize as opt
 from collections import Counter
 #%%
-""" PREFERENTIAL ATTACHMENT """
+""" MIXED ATTACHMENT """
 # Algorithm/ Network definitions
 def Increment():
     degree.append(0) #!
@@ -78,14 +78,14 @@ def A(Iterations):
 #%%
 # Initialisation
 
-vertices = [1,2,3,4]
-degree = [3,3,3,3]
-vertex_con = [[2,3,4], [1,3,4], [1,2,4], [1,2,3]]
+#vertices = [1,2,3,4]
+#degree = [3,3,3,3]
+#vertex_con = [[2,3,4], [1,3,4], [1,2,4], [1,2,3]]
 #Data = [vertices, degree, vertex_con]
 ###%%
 Nn = 64 # The number of nodes in the initial graph
 vertices = [i for i in range(1,Nn+1)]
-degree = [Nn-1]*Nn
+#degree = [Nn-1]*Nn
 degree = [2]*Nn
 #vertex_con = [[] for o in range(Nn)]
 #vertex_con = [vertices[:x] + vertices[x+1:] for x in range(Nn)]
@@ -110,9 +110,9 @@ vertex_con[Nn-1] = [Nn-1, 1]
 data = {}
 # R-1 is the number of separate networks simulated  
 # I is the number of single grain additions (i.e. total time)
-R = 2 
-t = 10000
-g = np.array([2,4,8])#,16,32,64])
+R = 11 
+t = 100000
+g = np.array([2,4,8,16,32,64])#,16,32,64])
 #g = np.array([1,2,3,4])
 for j in range(len(g)):
     for h in range(1,R):
@@ -131,12 +131,12 @@ for j in range(len(g)):
 #            else:
 #                L = g[j+1]
         
-        vertices = [1,2,3,4]
-        degree = [3,3,3,3]
-        vertex_con = [[2,3,4], [1,3,4], [1,2,4],[1,2,3]]
+#        vertices = [1,2,3,4]
+#        degree = [3,3,3,3]
+#        vertex_con = [[2,3,4], [1,3,4], [1,2,4],[1,2,3]]
         
         vertices = [i for i in range(1,Nn+1)]
-        degree = [Nn-1]*Nn
+#        degree = [Nn-1]*Nn
         vertex_con = [vertices[:z] + vertices[z+1:] for z in range(Nn)]
         
         degree = [2]*Nn
@@ -152,6 +152,27 @@ for j in range(len(g)):
 # 11:11 13:39 1,1 2,1 3,1 complete; 4,1 96206/100000 process complete
 
 # 13:25 
+#%%
+
+for i in range(len(data[2,1][0])):
+    d.append(np.mean([data[2,1][0][i], data[2,2][0][i], data[2,3][0][i], data[2,4][0][i], data[2,5][0][i],
+                      data[2,6][0][i], data[2,7][0][i], data[2,8][0][i], data[2,9][0][i], data[2,10][0][i]]))
+#%%
+#scale = 1.2
+#s0 = False # whether or not to include s = 0 avalanches 
+#d = []
+#
+#for i in range(len(data[2,1][0])):
+#    d.append(np.mean([logbin(data[2,1][i],scale, s0), logbin(data[2,2][i],scale, s0),
+#                        logbin(data[2,3][i],scale, s0), logbin(data[2,4][i],scale, s0), 
+#                        logbin(data[2,5][i],scale, s0), logbin(data[2,6][i],scale, s0), 
+#                        logbin(data[2,7][i],scale, s0), logbin(data[2,8][i],scale, s0),
+#                        logbin(data[2,9][i],scale, s0), logbin(data[2,10][i],scale, s0)]))
+Data = {}
+for c in g:
+    Data[c] = (data[c,1][0] + data[c,2][0] + data[c,3][0] + data[c,4][0] + data[c,5][0] + 
+            data[c,6][0] + data[c,7][0] + data[c,8][0] + data[c,9][0] + data[c,10][0])
+#bin_k1 = logbin(data[2,1][0],scale, s0)
 #%%
 from collections import Counter 
 
@@ -207,11 +228,14 @@ s0 = False # whether or not to include s = 0 avalanches
 #bin_k3 = logbin(data[3,1][0],scale, s0)
 #bin_k4 = logbin(data[4,1][0],scale, s0)
 
-bin_k1 = logbin(data[2,1][0],scale, s0)
-bin_k2 = logbin(data[4,1][0],scale, s0)
-bin_k3 = logbin(data[8,1][0],scale, s0)
+#bin_k1 = logbin(data[2,1][0],scale, s0)
+#bin_k2 = logbin(data[4,1][0],scale, s0)
+#bin_k3 = logbin(data[8,1][0],scale, s0)
 #bin_k4 = logbin(data[4,1][0],scale, s0)
 
+bin_k1 = logbin(Data[2],scale, s0)
+bin_k2 = logbin(Data[4],scale, s0)
+bin_k3 = logbin(Data[8],scale, s0)
 
 plt.plot(bin_k1[0], bin_k1[1], 'x-', label = "m = 1")
 plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
