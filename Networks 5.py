@@ -11,7 +11,7 @@ CID: 01508466
 #%% WRITE
 import pickle
 
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Pref24810k64;2e', 'wb') as dummy:
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAAAAAAAAAAA', 'wb') as dummy:
     pickle.dump(data, dummy, protocol=pickle.HIGHEST_PROTOCOL)
     
 #%% READ
@@ -19,8 +19,12 @@ import pickle
 # Complete3m100k
 # Incompletem4100k
 # Data1.5M;2R
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAAAA', 'rb') as dummy:
-    data = pickle.load(dummy)
+
+# P10k3R64i2;4;8;16;32i
+# P10k5R64
+# 32ii
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\P10k5R64', 'rb') as dummy:
+    dataB = pickle.load(dummy)
 
 #%%
 import numpy as np
@@ -83,7 +87,7 @@ def A(Iterations):
 #vertex_con = [[2,3,4], [1,3,4], [1,2,4], [1,2,3]]
 #Data = [vertices, degree, vertex_con]
 ###%%
-Nn = 64 # The number of nodes in the initial graph
+Nn = 32 # The number of nodes in the initial graph
 vertices = [i for i in range(1,Nn+1)]
 #degree = [Nn-1]*Nn
 degree = [2]*Nn
@@ -110,15 +114,15 @@ vertex_con[Nn-1] = [Nn-1, 1]
 data = {}
 # R-1 is the number of separate networks simulated  
 # I is the number of single grain additions (i.e. total time)
-R = 11 
+R = 4 
 t = 100000
-g = np.array([2,4,8,16,32,64])#,16,32,64])
+g = np.array([2,4,8,16,32])#,16,32,64])
 #g = np.array([1,2,3,4])
 for j in range(len(g)):
     for h in range(1,R):
         m = g[j]
         # q is the probability the edge is joined using preferential attachment 
-        q = 1
+        q = 0
         A(t)
         data[g[j],h] = [degree, vertex_con]
         
@@ -145,7 +149,8 @@ for j in range(len(g)):
         vertex_con = [[o-1, o+1] for o in vertices]
         vertex_con[0] = [Nn, 2]
         vertex_con[Nn-1] = [Nn-1, 1]
-
+        print("Run Complete")
+    print("Iteration Complete")
         #Data = [degree, vertex_con]
 
 # 15:43 19:28 1,1 2,1 3,1 complete; 4,1 87214/100000 process complete
@@ -153,10 +158,10 @@ for j in range(len(g)):
 
 # 13:25 
 #%%
-
+d = []
 for i in range(len(data[2,1][0])):
-    d.append(np.mean([data[2,1][0][i], data[2,2][0][i], data[2,3][0][i], data[2,4][0][i], data[2,5][0][i],
-                      data[2,6][0][i], data[2,7][0][i], data[2,8][0][i], data[2,9][0][i], data[2,10][0][i]]))
+    d.append(np.mean([data[2,1][0][i], data[2,2][0][i], data[2,3][0][i], data[2,4][0][i], data[2,5][0][i]]))#,
+# data[2,6][0][i], data[2,7][0][i], data[2,8][0][i], data[2,9][0][i], data[2,10][0][i]]))
 #%%
 #scale = 1.2
 #s0 = False # whether or not to include s = 0 avalanches 
@@ -170,8 +175,8 @@ for i in range(len(data[2,1][0])):
 #                        logbin(data[2,9][i],scale, s0), logbin(data[2,10][i],scale, s0)]))
 Data = {}
 for c in g:
-    Data[c] = (data[c,1][0] + data[c,2][0] + data[c,3][0] + data[c,4][0] + data[c,5][0] + 
-            data[c,6][0] + data[c,7][0] + data[c,8][0] + data[c,9][0] + data[c,10][0])
+    Data[c] = (data[c,1][0] + data[c,2][0] + data[c,3][0] + data[c,4][0] + data[c,5][0])# + 
+           # data[c,6][0] + data[c,7][0] + data[c,8][0] + data[c,9][0] + data[c,10][0])
 #bin_k1 = logbin(data[2,1][0],scale, s0)
 #%%
 from collections import Counter 
@@ -182,18 +187,23 @@ Count = {}
 
 nlist = []
 klist = []
+Troubleshoot = []
+
 #for i in [1,2,3,4]:
-for i in [2,4,8]:
+for i in [2,4]:#,8,16,32]:
     # Count contains the number of nodes with degree x; key is degree and value is 
     # the number of nodes with that degree 
     Count = Counter(data[i,1][0]) # dataA[i,1][1] is the degree of each node 
     n = []
     k = []
+    T = []
     
     for e in sorted(Count.keys()):
-        n.append(Count[e]/sum(data[i,1][0])) # divided by total number of nodes 
+        n.append(Count[e]/(t+Nn)) #sum(data[i,1][0])) # divided by total number of nodes 
         k.append(e)
-
+        T.append(Count[e])
+        
+    Troubleshoot.append(T)
     nlist.append(n)
     klist.append(k)
 #%%
@@ -201,9 +211,13 @@ for i in [2,4,8]:
 Number of nodes with degree x divided by total number of nodes vs degree """
 plt.figure()
 
-plt.plot(klist[0], nlist[0], 'x', label = "m = 1")
-plt.plot(klist[1], nlist[1], 'x', label = "m = 2")
-plt.plot(klist[2], nlist[2], 'x', label = "m = 3")
+plt.plot(klist[0], nlist[0], 'x', label = "m = 2")
+plt.plot(klist[1], nlist[1], 'x', label = "m = 4")
+plt.plot(klist[2], nlist[2], 'x', label = "m = 8")
+plt.plot(klist[3], nlist[3], 'x', label = "m = 16")
+plt.plot(klist[4], nlist[4], 'x', label = "m = 32")
+#plt.plot(klist[5], nlist[5], 'x', label = "m = 64")
+
 #plt.plot(klist[3], nlist[3], 'x', label = "m = 3")
 
 plt.xlabel("Degree, $k$", size = "15")
@@ -228,19 +242,37 @@ s0 = False # whether or not to include s = 0 avalanches
 #bin_k3 = logbin(data[3,1][0],scale, s0)
 #bin_k4 = logbin(data[4,1][0],scale, s0)
 
-#bin_k1 = logbin(data[2,1][0],scale, s0)
-#bin_k2 = logbin(data[4,1][0],scale, s0)
-#bin_k3 = logbin(data[8,1][0],scale, s0)
-#bin_k4 = logbin(data[4,1][0],scale, s0)
+bin_k2 = logbin(data[2,1][0],scale, s0)
+bin_k4 = logbin(data[4,1][0],scale, s0)
+bin_k8 = logbin(data[8,1][0],scale, s0)
+bin_k16 = logbin(data[16,1][0],scale, s0)
+bin_k32 = logbin(data[32,1][0],scale, s0)
+#bin_k64 = logbin(data[64,3][0],scale, s0)
 
-bin_k1 = logbin(Data[2],scale, s0)
-bin_k2 = logbin(Data[4],scale, s0)
-bin_k3 = logbin(Data[8],scale, s0)
 
-plt.plot(bin_k1[0], bin_k1[1], 'x-', label = "m = 1")
-plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
-plt.plot(bin_k3[0], bin_k3[1], 'x-', label = "m = 3")
+#bin_k1 = logbin(Data[2],scale, s0)
+#bin_k2 = logbin(Data[4],scale, s0)
+#bin_k3 = logbin(Data[8],scale, s0)
+
+#plt.plot(bin_k1[0], bin_k1[1], 'x-', label = "m = 1")
+#plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
+#plt.plot(bin_k3[0], bin_k3[1], 'x-', label = "m = 3")
 #plt.plot(bin_k4[0], bin_k4[1], 'x-', label = "m = 4")
+
+#bin_k2 = logbin(Data[2],scale, s0)
+#bin_k4 = logbin(Data[4],scale, s0)
+#bin_k8 = logbin(Data[8],scale, s0)
+#bin_k16 = logbin(Data[16],scale, s0)
+#bin_k32 = logbin(Data[32],scale, s0)
+#bin_k64 = logbin(Data[64],scale, s0)
+
+plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
+plt.plot(bin_k4[0], bin_k4[1], 'x-', label = "m = 4")
+plt.plot(bin_k8[0], bin_k8[1], 'x-', label = "m = 8")
+plt.plot(bin_k16[0], bin_k16[1], 'x-', label = "m = 16")
+plt.plot(bin_k32[0], bin_k32[1], 'x-', label = "m = 32")
+#plt.plot(bin_k64[0], bin_k64[1], 'x-', label = "m = 64")
+
 
 
 plt.xlabel("Degree, $k$", size = "15")
