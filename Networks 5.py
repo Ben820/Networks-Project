@@ -11,7 +11,7 @@ CID: 01508466
 #%% WRITE
 import pickle
 
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAAAAAAAAAAA', 'wb') as dummy:
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\BacUupFastRand100k14', 'wb') as dummy:
     pickle.dump(data, dummy, protocol=pickle.HIGHEST_PROTOCOL)
     
 #%% READ
@@ -40,23 +40,50 @@ def Increment():
     degree.append(0) #!
     vertex_con.append([]) #!
     vertices.append(vertices[-1] + 1) #!
+   # attachmentlist.append()
 
 def Edge():
 #    m = 3 # np.random.randint(0,3)
     for a in range(m):
         degree[-1] += 1
 
-        x = np.random.choice([1,2], p = [q,1-q])
+        x = np.random.choice([1,2], p = [q,1-q]) # Chooses between Preferential and Random 
         if x == 1:
             # For each node i, define a probability of an end attaching, prob
             #prob = np.array(degree[:-1])/(sum(degree[:-1]))
             #prob = prob.tolist()
-            Exist_ver = vertices[np.random.randint(len(vertices[:-1]))]
+            Exist_ver = wattachlist[np.random.randint(len(wattachlist))]#[:-1]))]
+            #print(Exist_ver)
             #Exist_ver = np.random.choice(vertices[:-1], p = prob)
     
             if a >= 1:
                 while np.any(Exist_ver == np.array(vertex_con[-1])) == True:
                     #Exist_ver = np.random.choice(vertices[:-1], p = prob)
+                    #Exist_ver = vertices[np.random.randint(len(vertices[:-1]))]
+                    Exist_ver = wattachlist[np.random.randint(len(wattachlist))]#[:-1]))]
+    
+            """ Existing vertex cannot be chosen to be the new node 
+            Remove eself loops """
+            while Exist_ver == vertices[-1]:
+                Exist_ver = wattachlist[np.random.randint(len(wattachlist))]
+            
+            #print(Exist_ver)
+            # Adds the index of the existing vertex to the list of new vertex connections
+            vertex_con[-1].append(Exist_ver)  
+            # Adds the index of the new vertex to the list of existing vertex connections              
+            vertex_con[Exist_ver-1].append(vertices[-1]) # Old vertices
+            degree[Exist_ver-1] += 1
+#            wattachlist.append(Exist_ver)
+#            wattachlist.append(vertices[-1])
+            
+        #if x == 2:
+        else:
+            #Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
+            Exist_ver = vertices[np.random.randint(len(vertices[:-1]))]
+    
+            if a >= 1:
+                while np.any(Exist_ver == np.array(vertex_con[-1])) == True:
+                    #Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
                     Exist_ver = vertices[np.random.randint(len(vertices[:-1]))]
     
             # Adds the index of the existing vertex to the list of new vertex connections
@@ -64,20 +91,9 @@ def Edge():
             # Adds the index of the new vertex to the list of existing vertex connections              
             vertex_con[Exist_ver-1].append(vertices[-1])
             degree[Exist_ver-1] += 1
-            
-        #if x == 2:
-        else:
-            Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
-    
-            if a >= 1:
-                while np.any(Exist_ver == np.array(vertex_con[-1])) == True:
-                    Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
-    
-            # Adds the index of the existing vertex to the list of new vertex connections
-            vertex_con[-1].append(Exist_ver)  
-            # Adds the index of the new vertex to the list of existing vertex connections              
-            vertex_con[Exist_ver-1].append(vertices[-1])
-            degree[Exist_ver-1] += 1
+        
+        wattachlist.append(Exist_ver)
+        wattachlist.append(vertices[-1])
     
 def A(Iterations):
     for b in range(Iterations):
@@ -103,7 +119,7 @@ vertex_con[Nn-1] = [Nn-1, 1]
 
 #%%
 Nng = [3,5,9,17,33]
-Nn = Nng[0] # m+1 nodes in system
+Nn = Nng[4] # m+1 nodes in system
 vertices = [i for i in range(1,Nn+1)]
 ver = vertices.copy()
 degree = [Nn-1]*Nn
@@ -112,6 +128,7 @@ for k in range(len(ver)):
     ver.pop(k)
     vertex_con[k] = ver
     ver = vertices.copy()
+wattachlist = np.concatenate(vertex_con).tolist()
 
     
     
@@ -139,15 +156,17 @@ for k in range(len(ver)):
 data = {}
 # R-1 is the number of separate networks simulated  
 # I is the number of single grain additions (i.e. total time)
-R = 15
-t = 100000
+R = 2
+t = 10000
 g = np.array([2,4,8,16,32])#,16,32,64])
-#g = np.array([32])
+g = np.array([32])
+Nng = [3,5,9,17,33]
+Nng = [33]
 #g = np.array([1,2,3,4])
 for j in range(len(g)):
     for h in range(1,R):
         Nn = Nng[j]
-        print(Nn)
+        #print(Nn)
         m = g[j]
         # q is the probability the edge is joined using preferential attachment 
         q = 1
@@ -188,6 +207,7 @@ for j in range(len(g)):
             ver.pop(k)
             vertex_con[k] = ver
             ver = vertices.copy()
+        wattachlist = np.concatenate(vertex_con).tolist()
     
         print("Run Complete")
     print("Iteration Complete")
@@ -228,14 +248,15 @@ Count = {}
 R = 4 
 t = 100000
 g = np.array([2,4,8,16,32])#,16,32,64])
-Nn = 32
+g = np.array([32])#,16,32,64])
+Nn = 33
 
 nlist = []
 klist = []
 Troubleshoot = []
 
 #for i in [1,2,3,4]:
-for i in [2,4,8,16,32]:
+for i in [32]:#[2,4,8,16,32]:
     # Count contains the number of nodes with degree x; key is degree and value is 
     # the number of nodes with that degree 
     Count = Counter(data[i,1][0]) # dataA[i,1][1] is the degree of each node 
@@ -349,6 +370,9 @@ plt.legend()
 plt.show()
 
 #%%
+scale = 1.2
+s0 = False # whether or not to include s = 0 avalanches 
+
 bin2 = []
 bin4 = []
 bin8 = []
@@ -356,22 +380,22 @@ bin16 = []
 bin32 = [] 
 
 A = ['bin2', 'bin4', 'bin8', 'bin16', 'bin32']
-binlist = [bin2, bin4, bin8, bin16]#, bin32]
+binlist = [bin32]#[bin2, bin4, bin8, bin16, bin32]
 logdict = {}
 
-R = 4
+R = 2
 
 for h in range(1,R):
-    bin2.append(logbin(data[2,h][0],scale))
-    bin4.append(logbin(data[4,h][0],scale))
-    bin8.append(logbin(data[8,h][0],scale))
-    bin16.append(logbin(data[16,h][0],scale))
-   # bin32.append(logbin(data[32,h][0],scale))
+#    bin2.append(logbin(data[2,h][0],scale))
+#    bin4.append(logbin(data[4,h][0],scale))
+#    bin8.append(logbin(data[8,h][0],scale))
+#    bin16.append(logbin(data[16,h][0],scale))
+    bin32.append(logbin(data[32,h][0],scale))
 
 g = np.array([2,4,8,16])#,16,32,64])
 
-for j in range(len(g)):
-    logdict[A[j]] = binlist[j]
+#for j in range(len(g)):
+#    logdict[A[j]] = binlist[j]
 
 #%%
 errlist = []
@@ -450,15 +474,15 @@ plt.figure()
 #plt.errorbar(BigXlist[0], Avg_ylist[0], )
 
 plt.plot(BigXlist[0], Avg_ylist[0], 'x-', label = "m=2")
-plt.plot(BigXlist[1], Avg_ylist[1], 'x-', label = "m=4")
-plt.plot(BigXlist[2], Avg_ylist[2], 'x-', label = "m=8")
-plt.plot(BigXlist[3], Avg_ylist[3], 'x-', label = "m=16")
+#plt.plot(BigXlist[1], Avg_ylist[1], 'x-', label = "m=4")
+#plt.plot(BigXlist[2], Avg_ylist[2], 'x-', label = "m=8")
+#plt.plot(BigXlist[3], Avg_ylist[3], 'x-', label = "m=16")
 
 
 plt.errorbar(BigXlist[0], Avg_ylist[0], yerr = errlist[0], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(BigXlist[1], Avg_ylist[1], yerr = errlist[1], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(BigXlist[2], Avg_ylist[2], yerr = errlist[2], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(BigXlist[3], Avg_ylist[3], yerr = errlist[3], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.errorbar(BigXlist[1], Avg_ylist[1], yerr = errlist[1], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.errorbar(BigXlist[2], Avg_ylist[2], yerr = errlist[2], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.errorbar(BigXlist[3], Avg_ylist[3], yerr = errlist[3], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
 #plt.errorbar(BigXlist[4], Avg_ylist[4], yerr = errlist[4], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
 
 def Pref_Deg_dist(k, m):
@@ -480,9 +504,9 @@ def Rand_Deg_dist(k, m):
 
 func = Rand_Deg_dist
 
-for j in range(len(g)):
-    arO = np.arange(g[j], np.amax(BigXlist[j]), 0.01) # Bins[j][0]
-    p0 = np.array([2])
+#for j in range(len(g)):
+#    arO = np.arange(g[j], np.amax(BigXlist[j]), 0.01) # Bins[j][0]
+#    p0 = np.array([2])
   #  p, cov = opt.curve_fit(func, BigXlist[j], Avg_ylist[j], p0) # Bins[j][0], Bins[j][1]
     #plt.plot(func(arO, g[j]), zorder=10,color = 'red')
 #    plt.plot(arO, func(arO, p[0]), zorder=10, color = 'red')
