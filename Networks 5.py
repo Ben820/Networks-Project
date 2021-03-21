@@ -219,6 +219,7 @@ for j in range(len(g)):
 
 # 13:25 
 #%%
+""" IRRELEVANT """
 d = []
 for i in range(len(data[2,1][0])):
     d.append(np.mean([data[2,1][0][i], data[2,2][0][i], data[2,3][0][i], data[2,4][0][i], data[2,5][0][i]]))#,
@@ -240,6 +241,7 @@ for c in g:
            # data[c,6][0] + data[c,7][0] + data[c,8][0] + data[c,9][0] + data[c,10][0])
 #bin_k1 = logbin(data[2,1][0],scale, s0)
 #%%
+""" Primitive plotting tool """
 from collections import Counter 
 
 Count = {}
@@ -309,6 +311,7 @@ s0 = False # whether or not to include s = 0 avalanches
 #bin_k3 = logbin(data[3,1][0],scale, s0)
 #bin_k4 = logbin(data[4,1][0],scale, s0)
 #%%
+""" USEFUL TOOL """
 for j in range(len(g)):
     for d in range(1,2):
         print(min(data[g[j],d][0]))
@@ -372,7 +375,8 @@ plt.legend()
 plt.show()
 
 #%%
-scale = 1.2
+""" RELEVANT """
+scale = 1.3
 s0 = False # whether or not to include s = 0 avalanches 
 
 bin2 = []
@@ -429,8 +433,8 @@ LogBin = []
 for j in range(len(g)):
     LogBin.append(logbin(UnBinlist[j],scale))
 
-
 #%%
+""" ERROR ANALYSIS - GEORGE ACKNOWLEDGMENT """
 errlist = []
 Avg_ylist = []
 BigXlist = []
@@ -529,10 +533,10 @@ plt.plot(LogBin[3][0], LogBin[3][1], 'x-', label = "m=16")
 plt.plot(LogBin[4][0], LogBin[4][1], 'x-', label = "m=32")
 
 plt.errorbar(LogBin[0][0], LogBin[0][1], yerr = errlist[0], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(LogBin[1][0], LogBin[1][1], yerr = errlist[1], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(LogBin[2][0], LogBin[2][1], yerr = errlist[2], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(LogBin[3][0], LogBin[3][1], yerr = errlist[3], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(LogBin[4][0], LogBin[4][1], yerr = errlist[4], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(LogBin[1][0], LogBin[1][1], yerr = errlist[1], color = "orange", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(LogBin[2][0], LogBin[2][1], yerr = errlist[2], color = "green", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(LogBin[3][0], LogBin[3][1], yerr = errlist[3], color = "crimson", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(LogBin[4][0], LogBin[4][1], yerr = errlist[4], color = "purple", fmt='o', mew=1, ms=0.2, capsize=6)
 
 
 
@@ -553,14 +557,20 @@ def Rand_Deg_dist(k, m):
 #p, cov = opt.curve_fit(Deg_dist, bin_k2[0], bin_k2[1], p0)
 #plt.plot(arO, Deg_dist(arO, p[0]), zorder=10,color = 'red')
 
-func = Rand_Deg_dist
+func = Pref_Deg_dist
+colour = ["navy", "orangered", "forestgreen", "firebrick", "blueviolet"]
 
-#for j in range(len(g)):
-#    arO = np.arange(g[j], np.amax(BigXlist[j]), 0.01) # Bins[j][0]
-#    p0 = np.array([2])
-  #  p, cov = opt.curve_fit(func, BigXlist[j], Avg_ylist[j], p0) # Bins[j][0], Bins[j][1]
-    #plt.plot(func(arO, g[j]), zorder=10,color = 'red')
-#    plt.plot(arO, func(arO, p[0]), zorder=10, color = 'red')
+theor_func = []
+
+for j in range(len(g)):
+    arO = np.arange(g[j], np.amax(LogBin[j][0]), 0.01) # Bins[j][0] BigXlist[j]
+    p0 = np.array([2])
+    #p, cov = opt.curve_fit(func, BigXlist[j], Avg_ylist[j], p0) # Bins[j][0], Bins[j][1]
+    p, cov = opt.curve_fit(func, LogBin[j][0][1:], LogBin[j][1][1:], p0) # Bins[j][0], Bins[j][1]
+    plt.plot(arO, func(arO, g[j]), '--', zorder=10, color = colour[j]) # PLOTTED
+    #plt.plot(arO, func(arO, p[0]), '--', zorder=10, color = colour[j])#, linewidth = 1) # FITTED
+    
+    theor_func.append(func(arO, g[j]))
 
 
 plt.xlabel("Degree, $k$", size = "15")
@@ -571,6 +581,40 @@ plt.legend()
 #plt.grid()
 #plt.savefig("Task 3a unbin.png", dpi = 1000)
 plt.show()
+#%%
+
+
+from scipy import stats
+ 
+for j in range(len(g)):
+    KS = stats.ks_2samp(theor_func[j], LogBin[j][1])
+    print("KS Test", j)
+    print(KS)
+
+
+
+
+#plt.figure()
+#
+#
+#def Pref_Deg_dist(k, m):
+#    A = 2*m*(m+1)
+#    B = (k+2)*(k+1)*k
+#    y = A/B
+#    return y
+#
+#xA = np.arange(2, 1000001)
+#plt.plot(xA, Pref_Deg_dist(xA, 2), 'x')
+#plt.grid()
+#plt.xscale("log")
+#plt.yscale("log")
+#plt.show()
+
+
+
+
+
+
 #%%
 # Attachment list
 Deg = {}
