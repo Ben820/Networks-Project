@@ -11,7 +11,7 @@ CID: 01508466
 #%% WRITE
 import pickle
 
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Pref10k;50R32ii', 'wb') as dummy:
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAAAAAAAAAAA', 'wb') as dummy:
     pickle.dump(data, dummy, protocol=pickle.HIGHEST_PROTOCOL)
     
 #%% READ
@@ -23,7 +23,9 @@ import pickle
 # P10k3R64i2;4;8;16;32i
 # P10k5R64
 # 32ii
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\P10k3R64i2;4;8;16;32i', 'rb') as dummy:
+# Pref10k;50R32ii
+# Rand4;8;16;32;64
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Pref10k;50R32ii', 'rb') as dummy:
     data = pickle.load(dummy)
 
 #%%
@@ -47,13 +49,15 @@ def Edge():
         x = np.random.choice([1,2], p = [q,1-q])
         if x == 1:
             # For each node i, define a probability of an end attaching, prob
-            prob = np.array(degree[:-1])/(sum(degree[:-1]))
+            #prob = np.array(degree[:-1])/(sum(degree[:-1]))
             #prob = prob.tolist()
-            Exist_ver = np.random.choice(vertices[:-1], p = prob)
+            Exist_ver = vertices[np.random.randint(len(vertices[:-1]))]
+            #Exist_ver = np.random.choice(vertices[:-1], p = prob)
     
             if a >= 1:
                 while np.any(Exist_ver == np.array(vertex_con[-1])) == True:
-                    Exist_ver = np.random.choice(vertices[:-1], p = prob)
+                    #Exist_ver = np.random.choice(vertices[:-1], p = prob)
+                    Exist_ver = vertices[np.random.randint(len(vertices[:-1]))]
     
             # Adds the index of the existing vertex to the list of new vertex connections
             vertex_con[-1].append(Exist_ver)  
@@ -90,13 +94,34 @@ def A(Iterations):
 Nn = 32 # The number of nodes in the initial graph
 vertices = [i for i in range(1,Nn+1)]
 #degree = [Nn-1]*Nn
-degree = [2]*Nn
+degree = [31]*Nn
 #vertex_con = [[] for o in range(Nn)]
 #vertex_con = [vertices[:x] + vertices[x+1:] for x in range(Nn)]
 vertex_con = [[o-1, o+1] for o in vertices]
 vertex_con[0] = [Nn, 2]
 vertex_con[Nn-1] = [Nn-1, 1]
 
+#%%
+Nng = [3,5,9,17,33]
+Nn = Nng[0] # m+1 nodes in system
+vertices = [i for i in range(1,Nn+1)]
+ver = vertices.copy()
+degree = [Nn-1]*Nn
+vertex_con = [[] for o in range(Nn)]
+for k in range(len(ver)):
+    ver.pop(k)
+    vertex_con[k] = ver
+    ver = vertices.copy()
+
+    
+    
+#vertex_con = [vertices.copy().pop(o) for o in range(len(vertices))] # problem is vertices labelling 
+
+
+
+
+#for j in range(len(vertex_con)):
+#    del(vertex_con[j][j])
 #for a in range(Nn):
 #    Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
 #
@@ -114,12 +139,15 @@ vertex_con[Nn-1] = [Nn-1, 1]
 data = {}
 # R-1 is the number of separate networks simulated  
 # I is the number of single grain additions (i.e. total time)
-R = 11 
-t = 50000
+R = 15
+t = 100000
 g = np.array([2,4,8,16,32])#,16,32,64])
+#g = np.array([32])
 #g = np.array([1,2,3,4])
 for j in range(len(g)):
     for h in range(1,R):
+        Nn = Nng[j]
+        print(Nn)
         m = g[j]
         # q is the probability the edge is joined using preferential attachment 
         q = 1
@@ -127,28 +155,40 @@ for j in range(len(g)):
         data[g[j],h] = [degree, vertex_con]
         
 #        # Condition to handle hitting the end of the list h
-#        if h < R-1:
-#            L = g[j]
-#        if h == R-1:
-#            if j >= len(g)-1:
-#                L = g[j]
-#            else:
-#                L = g[j+1]
+        if h < R-1:
+            Nn = Nng[j]
+        if h == R-1:
+            if j >= len(g)-1:
+                Nn = Nng[j]
+            else:
+                Nn = Nng[j+1]
         
 #        vertices = [1,2,3,4]
 #        degree = [3,3,3,3]
 #        vertex_con = [[2,3,4], [1,3,4], [1,2,4],[1,2,3]]
         
-        vertices = [i for i in range(1,Nn+1)]
-#        degree = [Nn-1]*Nn
-        vertex_con = [vertices[:z] + vertices[z+1:] for z in range(Nn)]
+        """  Old initialisation """
+#        vertices = [i for i in range(1,Nn+1)]
+##        degree = [Nn-1]*Nn
+#        vertex_con = [vertices[:z] + vertices[z+1:] for z in range(Nn)]
+#        
+#        degree = [2]*Nn
+#        #vertex_con = [[] for o in range(Nn)]
+#        #vertex_con = [vertices[:x] + vertices[x+1:] for x in range(Nn)]
+#        vertex_con = [[o-1, o+1] for o in vertices]
+#        vertex_con[0] = [Nn, 2]
+#        vertex_con[Nn-1] = [Nn-1, 1]
         
-        degree = [2]*Nn
-        #vertex_con = [[] for o in range(Nn)]
-        #vertex_con = [vertices[:x] + vertices[x+1:] for x in range(Nn)]
-        vertex_con = [[o-1, o+1] for o in vertices]
-        vertex_con[0] = [Nn, 2]
-        vertex_con[Nn-1] = [Nn-1, 1]
+        """  New initialisation """
+        vertices = [i for i in range(1,Nn+1)]
+        ver = vertices.copy()
+        degree = [Nn-1]*Nn
+        vertex_con = [[] for o in range(Nn)]
+        for k in range(len(ver)):
+            ver.pop(k)
+            vertex_con[k] = ver
+            ver = vertices.copy()
+    
         print("Run Complete")
     print("Iteration Complete")
         #Data = [degree, vertex_con]
@@ -246,13 +286,69 @@ s0 = False # whether or not to include s = 0 avalanches
 #bin_k2 = logbin(data[2,1][0],scale, s0)
 #bin_k3 = logbin(data[3,1][0],scale, s0)
 #bin_k4 = logbin(data[4,1][0],scale, s0)
+#%%
+for j in range(len(g)):
+    for d in range(1,4):
+        print(min(data[g[j],d][0]))
+#ind = data[16,7][0].index(6)
+#del(data[16,7][0][ind])
+#%%
+plt.figure()
+scale = 1.2
+s0 = False # whether or not to include s = 0 avalanches 
 
-#ind = data[4,1][0].index(3)
-#del(data[4,1][0][ind])
-##%%
 logdict = {}
 ##%%
 
+#for i in range(len(bin16[0][0])):
+#    for k in range(len(bin16)):
+#        #bin16[k][0][i]
+#        logdict[i] = [bin16[k][1][i]]
+
+
+bin_k2 = logbin(data[2,1][0],scale, s0)
+bin_k4 = logbin(data[4,1][0],scale, s0)
+bin_k8 = logbin(data[8,1][0],scale, s0)
+bin_k16 = logbin(data[16,1][0],scale, s0)
+bin_k32 = logbin(data[32,1][0],scale, s0)
+#bin_k64 = logbin(data[64,3][0],scale, s0)
+
+#bin16 = [logbin(data[16,1][0],scale), logbin(data[16,2][0],scale, s0), logbin(data[16,3][0],scale, s0)]
+
+Bins = [bin_k2, bin_k4, bin_k8, bin_k16, bin_k32]
+#bin_k1 = logbin(Data[2],scale, s0)
+#bin_k2 = logbin(Data[4],scale, s0)
+#bin_k3 = logbin(Data[8],scale, s0)
+
+#plt.plot(bin_k1[0], bin_k1[1], 'x-', label = "m = 1")
+#plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
+#plt.plot(bin_k3[0], bin_k3[1], 'x-', label = "m = 3")
+#plt.plot(bin_k4[0], bin_k4[1], 'x-', label = "m = 4")
+
+#bin_k2 = logbin(Data[2],scale, s0)
+#bin_k4 = logbin(Data[4],scale, s0)
+#bin_k8 = logbin(Data[8],scale, s0)
+#bin_k16 = logbin(Data[16],scale, s0)
+#bin_k32 = logbin(Data[32],scale, s0)
+#bin_k64 = logbin(Data[64],scale, s0)
+
+plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
+plt.plot(bin_k4[0], bin_k4[1], 'x-', label = "m = 4")
+plt.plot(bin_k8[0], bin_k8[1], 'x-', label = "m = 8")
+plt.plot(bin_k16[0], bin_k16[1], 'x-', label = "m = 16")
+plt.plot(bin_k32[0], bin_k32[1], 'x-', label = "m = 32")
+#plt.plot(bin_k64[0], bin_k64[1], 'x-', label = "m = 64")
+
+plt.xlabel("Degree, $k$", size = "15")
+plt.ylabel("Degree probability, $P_\infty(k)$", size = "15")
+plt.xscale("log")
+plt.yscale("log")
+plt.legend()
+#plt.grid()
+#plt.savefig("Task 3a unbin.png", dpi = 1000)
+plt.show()
+
+#%%
 bin2 = []
 bin4 = []
 bin8 = []
@@ -263,24 +359,24 @@ A = ['bin2', 'bin4', 'bin8', 'bin16', 'bin32']
 binlist = [bin2, bin4, bin8, bin16]#, bin32]
 logdict = {}
 
+R = 4
+
 for h in range(1,R):
     bin2.append(logbin(data[2,h][0],scale))
     bin4.append(logbin(data[4,h][0],scale))
     bin8.append(logbin(data[8,h][0],scale))
     bin16.append(logbin(data[16,h][0],scale))
-    #bin32.append(logbin(data[32,h][0],scale))
+   # bin32.append(logbin(data[32,h][0],scale))
 
 g = np.array([2,4,8,16])#,16,32,64])
 
 for j in range(len(g)):
     logdict[A[j]] = binlist[j]
 
-#for i in range(len(bin16[0][0])):
-#    for k in range(len(bin16)):
-#        #bin16[k][0][i]
-#        logdict[i] = [bin16[k][1][i]]
 #%%
 errlist = []
+Avg_ylist = []
+BigXlist = []
 for t in range(len(binlist)):
     xlist = []
     ylist = []
@@ -311,6 +407,8 @@ for t in range(len(binlist)):
         err_y.append(np.std(Sampl[s])/np.size(Sampl[s]))
         avg_y.append(np.mean(Sampl[s]))
     errlist.append(err_y)
+    Avg_ylist.append(avg_y)
+    BigXlist.append(Big_xlist.tolist())
 
 """ add probabilities together from same geometric means across iterations, to get
 set of values per geometric mean; calculate average and st dev """
@@ -347,51 +445,21 @@ for a in range(len(Big_x)):
 #            S[j,p] = [[], []]
 #
 #%%
+""" Averaged Logbin + Errors """
+plt.figure()
+#plt.errorbar(BigXlist[0], Avg_ylist[0], )
 
-bin_k2 = logbin(data[2,2][0],scale, s0)
-bin_k4 = logbin(data[4,3][0],scale, s0)
-bin_k8 = logbin(data[8,2][0],scale, s0)
-bin_k16 = logbin(data[16,1][0],scale, s0)
-bin_k32 = logbin(data[32,1][0],scale, s0)
-#bin_k64 = logbin(data[64,3][0],scale, s0)
-
-#bin16 = [logbin(data[16,1][0],scale), logbin(data[16,2][0],scale, s0), logbin(data[16,3][0],scale, s0)]
-
-Bins = [bin_k2, bin_k4, bin_k8, bin_k16, bin_k32]
-#bin_k1 = logbin(Data[2],scale, s0)
-#bin_k2 = logbin(Data[4],scale, s0)
-#bin_k3 = logbin(Data[8],scale, s0)
-
-#plt.plot(bin_k1[0], bin_k1[1], 'x-', label = "m = 1")
-#plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
-#plt.plot(bin_k3[0], bin_k3[1], 'x-', label = "m = 3")
-#plt.plot(bin_k4[0], bin_k4[1], 'x-', label = "m = 4")
-
-#bin_k2 = logbin(Data[2],scale, s0)
-#bin_k4 = logbin(Data[4],scale, s0)
-#bin_k8 = logbin(Data[8],scale, s0)
-#bin_k16 = logbin(Data[16],scale, s0)
-#bin_k32 = logbin(Data[32],scale, s0)
-#bin_k64 = logbin(Data[64],scale, s0)
-
-plt.plot(bin_k2[0], bin_k2[1], 'x-', label = "m = 2")
-plt.plot(bin_k4[0], bin_k4[1], 'x-', label = "m = 4")
-plt.plot(bin_k8[0], bin_k8[1], 'x-', label = "m = 8")
-plt.plot(bin_k16[0], bin_k16[1], 'x-', label = "m = 16")
-plt.plot(bin_k32[0], bin_k32[1], 'x-', label = "m = 32")
-#plt.plot(bin_k64[0], bin_k64[1], 'x-', label = "m = 64")
-##%%
+plt.plot(BigXlist[0], Avg_ylist[0], 'x-', label = "m=2")
+plt.plot(BigXlist[1], Avg_ylist[1], 'x-', label = "m=4")
+plt.plot(BigXlist[2], Avg_ylist[2], 'x-', label = "m=8")
+plt.plot(BigXlist[3], Avg_ylist[3], 'x-', label = "m=16")
 
 
-
-
-
-
-
-
-
-
-
+plt.errorbar(BigXlist[0], Avg_ylist[0], yerr = errlist[0], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(BigXlist[1], Avg_ylist[1], yerr = errlist[1], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(BigXlist[2], Avg_ylist[2], yerr = errlist[2], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(BigXlist[3], Avg_ylist[3], yerr = errlist[3], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.errorbar(BigXlist[4], Avg_ylist[4], yerr = errlist[4], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
 
 def Pref_Deg_dist(k, m):
     A = 2*m*(m+1)
@@ -413,10 +481,11 @@ def Rand_Deg_dist(k, m):
 func = Rand_Deg_dist
 
 for j in range(len(g)):
-    arO = np.arange(g[j], np.amax(Bins[j][0]), 0.01)
+    arO = np.arange(g[j], np.amax(BigXlist[j]), 0.01) # Bins[j][0]
     p0 = np.array([2])
-    #p, cov = opt.curve_fit(func, Bins[j][0], Bins[j][1], p0)
-   # plt.plot(func(arO, g[j]), zorder=10,color = 'red')
+  #  p, cov = opt.curve_fit(func, BigXlist[j], Avg_ylist[j], p0) # Bins[j][0], Bins[j][1]
+    #plt.plot(func(arO, g[j]), zorder=10,color = 'red')
+#    plt.plot(arO, func(arO, p[0]), zorder=10, color = 'red')
 
 
 plt.xlabel("Degree, $k$", size = "15")
