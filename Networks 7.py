@@ -37,9 +37,9 @@ from collections import Counter
 """ MIXED ATTACHMENT """
 # Algorithm/ Network definitions
 def Increment():
-    degree.append(0) #!
-    vertex_con.append([]) #!
-    vertices.append(vertices[-1] + 1) #!
+    degree.append(0)
+    vertex_con.append([])
+    vertices.append(vertices[-1] + 1)
 
 def Edge():
     #vert = vertices[:-1]
@@ -78,13 +78,18 @@ def Edge():
         #if x == 2:
         else:
             #Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
-            Exist_ver = vertices[np.random.randint(len(vert))]
+            Exist_ver = vertices[np.random.randint(len(vertices))]
     
             if a >= 1:
                 while np.any(Exist_ver == np.array(vertex_con[-1])) == True:
                     #Exist_ver = np.random.choice(vertices[:-1])#, p = prob)
-                    Exist_ver = vertices[np.random.randint(len(vert))]
-    
+                    Exist_ver = vertices[np.random.randint(len(vertices))]
+            
+            """ Existing vertex cannot be chosen to be the new node 
+            Removes self loops """
+            while Exist_ver == vertices[-1]:
+                Exist_ver = vertices[np.random.randint(len(vertices))]
+
             # Adds the index of the existing vertex to the list of new vertex connections
             vertex_con[-1].append(Exist_ver)  
             # Adds the index of the new vertex to the list of existing vertex connections              
@@ -132,8 +137,8 @@ for j in range(len(t)):
         #m = g[j]
         m = 2
         # q is the probability the edge is joined using preferential attachment 
-        q = 1
-        A(t[j])
+        q = 0
+        A(t[j]) # A(t[j]) A(t)
         data[t[j],h] = [degree, vertex_con]
         
         # Condition to handle hitting the end of the list h
@@ -196,7 +201,7 @@ plt.legend()
 plt.show()
 #%%
 """ RELEVANT """
-scale = 1.1
+scale = 1.3
 s0 = False # whether or not to include s = 0 avalanches 
 
 bin2 = []
@@ -221,7 +226,7 @@ for h in range(1,R):
 g = np.array([2,4,8,16,32])
 #%%
 """ Maximum degree distribution; m = 2, N = 2^10 - 2^17 """
-scale = 1.3
+scale = 1.2
 s0 = False # whether or not to include s = 0 avalanches 
 
 bin128 = []
@@ -261,6 +266,37 @@ for h in range(1,R):
     bin131072.append(logbin(data[131072,h][0],scale))
 
 g = np.array([2,4,8,16,32])
+#%%
+""" Maximum degree vs N """
+max128 = []
+max256 = []
+max512 = []
+max1024 = []
+max2048 = []
+max4096 = []
+max8192 = []
+max16384 = []
+max32768 = []
+max65536 = []
+max131072 = []
+
+maxlist = [max128, max512, max2048, max8192, max32768, max131072]
+maxlist = [max128, max256, max512, max1024, max2048, max4096, max8192, max16384, 
+           max32768, max65536, max131072]
+
+ts = [128, 512, 2048, 8192, 32768, 131072]
+R = 101
+
+for v in range(len(maxlist)):
+    for h in range(1,R):
+        maxlist[v].append(np.amax(np.array(data[t[v],h][0])))
+
+stdev = []
+avg = []
+
+for r in range(len(maxlist)):
+    stdev.append(np.std(np.array(maxlist[r])))
+    avg.append(np.mean(np.array(maxlist[r])))
 #%% 
 """ Variable m, Fixed N """
 unbin2 = []
@@ -424,13 +460,13 @@ def Pref_deg_dist(k, m):
     return y
 
 def Rand_deg_dist(k, m):
-#    A = m**(k-m)
-#    B = (1+m)**(1+k-m)
-    ai = k-m
-    bi = 1+m
-    bii = 1+k-m
-    A = math.pow(m, ai)
-    B = math.pow(bi, bii)
+    A = m**(k-m)
+    B = (1+m)**(1+k-m)
+#    ai = k-m
+#    bi = 1+m
+#    bii = 1+k-m
+#    A = math.pow(m, ai)
+#    B = math.pow(bi, bii)
     y = A/B
     return y
 
@@ -446,14 +482,14 @@ def Mixed_deg_dist_onehalf(k, m):
     C = B*(k+m+2)*(k+m+1)
     return A/C
 
-func = Pref_deg_dist
+func = Rand_deg_dist
 colour = ["navy", "orangered", "forestgreen", "firebrick", "blueviolet"]
 
 theor_func = []
 
 for j in range(len(g)):
     arO = np.arange(g[j], np.amax(LogBin[j][0]+10), 0.01) 
-    #plt.plot(arO, func(arO, g[j]), '--', zorder=10, color = colour[j]) 
+    plt.plot(arO, func(arO, g[j]), '--', zorder=10, color = colour[j]) 
     
     theor_func.append(func(arO, g[j]))
 
@@ -475,17 +511,6 @@ for j in range(len(g)):
     print("KS Test m =", g[j])
     print(KS)
 #%%
-q = 0.5
-x = np.random.choice([1,2], p = [q,1-q])
-if x == 1:
-    print('yes')
-else:
-    print("No")
-#else:
-#    print("fuck")
-
-
-#%%
 """ Averaged Logbin + Errors """
 plt.figure()
 
@@ -497,18 +522,22 @@ labels_redu = ["N = 128", "N = 512", "N = 2048", "N = 8192",
           "N = 32768", "N = 131072"]
 
 tlist = np.sqrt(np.array([128, 512, 2048, 8192, 32768, 131072])).tolist()
+trlist = np.log10(np.array([128, 512, 2048, 8192, 32768, 131072])).tolist()
 colours = ["lightseagreen", "orangered", "forestgreen", "firebrick", "blueviolet", "navy"]
 
-func = Pref_deg_dist
+func = Rand_deg_dist
 
 for z in [5,4,3,2,1,0]:#range(len(t)-5):
     ycoll = func(LogBin[z][0], 2)
-#    plt.plot(LogBin[z][0], LogBin[z][1], 'x', color = colours[z], label = labels_redu[z])
+#    plt.plot(LogBin[z][0], LogBin[z][1], 'x-', color = colours[z], label = labels_redu[z])
 #    plt.errorbar(LogBin[z][0], LogBin[z][1], yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
-    # Data Collpase
-    plt.plot(LogBin[z][0]/tlist[z], LogBin[z][1]/ycoll, 'x', color = colours[z], label = labels_redu[z])
-    plt.errorbar(LogBin[z][0]/tlist[z], LogBin[z][1]/ycoll, yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
-
+    # Data Collpase Preferential
+#    plt.plot(LogBin[z][0]/tlist[z], LogBin[z][1]/ycoll, 'x', color = colours[z], label = labels_redu[z])
+#    plt.errorbar(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
+#
+    plt.plot(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, 'x', color = colours[z], label = labels_redu[z])
+    plt.errorbar(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
+    
     
 #plt.plot(LogBin[0][0], LogBin[0][1], 'x-', label = "m=2")
 #plt.plot(LogBin[1][0], LogBin[1][1], 'x-', label = "m=4")
@@ -532,13 +561,13 @@ def Pref_deg_dist(k, m):
     return y
 
 def Rand_deg_dist(k, m):
-#    A = m**(k-m)
-#    B = (1+m)**(1+k-m)
-    ai = k-m
-    bi = 1+m
-    bii = 1+k-m
-    A = math.pow(m, ai)
-    B = math.pow(bi, bii)
+    A = m**(k-m)
+    B = (1+m)**(1+k-m)
+#    ai = k-m
+#    bi = 1+m
+#    bii = 1+k-m
+#    A = math.pow(m, ai)
+#    B = math.pow(bi, bii)
     y = A/B
     return y
 
@@ -574,6 +603,33 @@ plt.legend()
 #plt.grid()
 #plt.savefig("Task 3a unbin.png", dpi = 1000)
 plt.show()
+#%%
+""" Maximum degree vs N for variable N fixed m = 2 """
+plt.figure()
+
+plt.plot(t, avg, 'x')
+plt.errorbar(t, avg, yerr = stdev, fmt='o', mew=1, ms=0.2, capsize=6)
+
+plt.xlabel("Total Number of Nodes, $N$", size = "15")
+plt.ylabel(r"Average Maximum Degree, $\langle k_1 \rangle$", size = "15")
+#plt.xscale("log")
+#plt.yscale("log")
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
