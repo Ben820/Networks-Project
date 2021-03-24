@@ -25,8 +25,10 @@ import pickle
 # 32ii
 # Pref10k;50R32ii
 # Rand4;8;16;32;64
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Pref10k;50R32ii', 'rb') as dummy:
-    dataB = pickle.load(dummy)
+
+# Prefer100k50runs
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\32ii', 'rb') as dummy:
+    data = pickle.load(dummy)
 
 #%%
 import numpy as np
@@ -137,7 +139,7 @@ for j in range(len(t)):
         #m = g[j]
         m = 2
         # q is the probability the edge is joined using preferential attachment 
-        q = 0
+        q = 2/3
         A(t[j]) # A(t[j]) A(t)
         data[t[j],h] = [degree, vertex_con]
         
@@ -370,14 +372,14 @@ UnBinlist = [unbin128, unbin512, unbin2048,
 #scale = 1.1 # SCALE NEEDS TO BE SET WITH THE ERRORS (i.e. scale needs to be same for both errors and this)
 s0 = False # whether or not to include s = 0 avalanches 
 # Fixed N variable m
-#LogBin = []
-#for j in range(len(g)):
-#    LogBin.append(logbin(UnBinlist[j],scale))
+LogBin = []
+for j in range(len(g)):
+    LogBin.append(logbin(UnBinlist[j],scale))
 
 # Fixed m variable N
-LogBin = []
-for j in range(len(t)-5):
-    LogBin.append(logbin(UnBinlist[j],scale))
+#LogBin = []
+#for j in range(len(t)-5):
+#    LogBin.append(logbin(UnBinlist[j],scale))
 #%%
 """ ERROR ANALYSIS - GEORGE ACKNOWLEDGMENT """
 
@@ -451,7 +453,7 @@ plt.errorbar(LogBin[3][0], LogBin[3][1], yerr = errlist[3], color = "crimson", f
 plt.errorbar(LogBin[4][0], LogBin[4][1], yerr = errlist[4], color = "purple", fmt='o', mew=1, ms=0.2, capsize=6)
 
 
-import math
+#import math
 
 def Pref_deg_dist(k, m):
     A = 2*m*(m+1)
@@ -482,7 +484,7 @@ def Mixed_deg_dist_onehalf(k, m):
     C = B*(k+m+2)*(k+m+1)
     return A/C
 
-func = Rand_deg_dist
+func = Pref_deg_dist
 colour = ["navy", "orangered", "forestgreen", "firebrick", "blueviolet"]
 
 theor_func = []
@@ -525,18 +527,18 @@ tlist = np.sqrt(np.array([128, 512, 2048, 8192, 32768, 131072])).tolist()
 trlist = np.log10(np.array([128, 512, 2048, 8192, 32768, 131072])).tolist()
 colours = ["lightseagreen", "orangered", "forestgreen", "firebrick", "blueviolet", "navy"]
 
-func = Rand_deg_dist
+#func = Rand_deg_dist
 
 for z in [5,4,3,2,1,0]:#range(len(t)-5):
-    ycoll = func(LogBin[z][0], 2)
-#    plt.plot(LogBin[z][0], LogBin[z][1], 'x-', color = colours[z], label = labels_redu[z])
-#    plt.errorbar(LogBin[z][0], LogBin[z][1], yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
+    #ycoll = func(LogBin[z][0], 2)
+    plt.plot(LogBin[z][0], LogBin[z][1], 'x-', color = colours[z], label = labels_redu[z])
+    plt.errorbar(LogBin[z][0], LogBin[z][1], yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
     # Data Collpase Preferential
 #    plt.plot(LogBin[z][0]/tlist[z], LogBin[z][1]/ycoll, 'x', color = colours[z], label = labels_redu[z])
 #    plt.errorbar(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
 #
-    plt.plot(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, 'x', color = colours[z], label = labels_redu[z])
-    plt.errorbar(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
+#    plt.plot(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, 'x', color = colours[z], label = labels_redu[z])
+#    plt.errorbar(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
     
     
 #plt.plot(LogBin[0][0], LogBin[0][1], 'x-', label = "m=2")
