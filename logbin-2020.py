@@ -66,6 +66,7 @@ def logbin(data, scale = 1., zeros = False):
     count = np.bincount(data)
     tot = np.sum(count)
     smax = np.max(data)
+    smin = np.min(data) # New code 
     if scale > 1:
         jmax = np.ceil(np.log(smax)/np.log(scale))
         if zeros: 
@@ -75,6 +76,12 @@ def logbin(data, scale = 1., zeros = False):
         else: 
             """ If s0 = False do this """
             binedges = scale ** np.arange(1,jmax + 1)
+            
+            # Following three lines - credit Vedant Varshney
+            jinit = np.floor(np.log(smin)/np.log(scale))
+            binedges = scale ** np.arange(jinit, jmax + 1)
+            binedges[0] = smin
+
             #binedges = scale ** np.arange(np.min(data),jmax + 1)
             # count = count[1:]
         binedges = np.unique(binedges.astype('uint64'))
@@ -102,3 +109,5 @@ def logbin(data, scale = 1., zeros = False):
     x = x[y!=0]
     y = y[y!=0]
     return x,y
+
+
