@@ -28,7 +28,7 @@ import pickle
 
 # Prefer100k50runs
 # Data Files - Final\
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Mixed23100k50R64', 'rb') as dummy:
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\DataFiles - New\Random100k50R64', 'rb') as dummy:
     data = pickle.load(dummy)
 
 #%%
@@ -452,23 +452,23 @@ plt.figure()
 
 """ Combining different runs into a huge dataset which is logbinned to give x and y """
 
-#plt.plot(LogBin[0][0], LogBin[0][1], 'x-', label = "m=2")
-#plt.plot(LogBin[1][0], LogBin[1][1], 'x-', label = "m=4")
-#plt.plot(LogBin[2][0], LogBin[2][1], 'x-', label = "m=8")
-#plt.plot(LogBin[3][0], LogBin[3][1], 'x-', label = "m=16")
-#plt.plot(LogBin[4][0], LogBin[4][1], 'x-', label = "m=32")
-#plt.plot(LogBin[5][0], LogBin[5][1], 'x-', label = "m=64")
-#
-#
-#plt.errorbar(LogBin[0][0], LogBin[0][1], yerr = errlist[0], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
-#plt.errorbar(LogBin[1][0], LogBin[1][1], yerr = errlist[1], color = "orange", fmt='o', mew=1, ms=0.2, capsize=6)
-#plt.errorbar(LogBin[2][0], LogBin[2][1], yerr = errlist[2], color = "green", fmt='o', mew=1, ms=0.2, capsize=6)
-#plt.errorbar(LogBin[3][0], LogBin[3][1], yerr = errlist[3], color = "crimson", fmt='o', mew=1, ms=0.2, capsize=6)
-#plt.errorbar(LogBin[4][0], LogBin[4][1], yerr = errlist[4], color = "purple", fmt='o', mew=1, ms=0.2, capsize=6)
-#plt.errorbar(LogBin[5][0], LogBin[5][1], yerr = errlist[5], color = "steelblue", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.plot(LogBin[0][0], LogBin[0][1], 'x-', label = "m=2")
+plt.plot(LogBin[1][0], LogBin[1][1], 'x-', label = "m=4")
+plt.plot(LogBin[2][0], LogBin[2][1], 'x-', label = "m=8")
+plt.plot(LogBin[3][0], LogBin[3][1], 'x-', label = "m=16")
+plt.plot(LogBin[4][0], LogBin[4][1], 'x-', label = "m=32")
+plt.plot(LogBin[5][0], LogBin[5][1], 'x-', label = "m=64")
 
 
-#import math
+plt.errorbar(LogBin[0][0], LogBin[0][1], yerr = errlist[0], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(LogBin[1][0], LogBin[1][1], yerr = errlist[1], color = "orange", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(LogBin[2][0], LogBin[2][1], yerr = errlist[2], color = "green", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(LogBin[3][0], LogBin[3][1], yerr = errlist[3], color = "crimson", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(LogBin[4][0], LogBin[4][1], yerr = errlist[4], color = "purple", fmt='o', mew=1, ms=0.2, capsize=6)
+plt.errorbar(LogBin[5][0], LogBin[5][1], yerr = errlist[5], color = "steelblue", fmt='o', mew=1, ms=0.2, capsize=6)
+
+
+import math
 
 def Pref_deg_dist(k, m):
     A = 2*m*(m+1)
@@ -484,8 +484,8 @@ def Rand_deg_dist(k, m):
 #    bii = 1+k-m
 #    A = math.pow(m, ai)
 #    B = math.pow(bi, bii)
-    y = A/B
-    return y
+#    y = A/B
+    return ((m/(m+1))**(k-m))*(1/(1+m))
 
 def Mixed_deg_dist_twothirds(k, m):
 #    A = 3*((2*m)+3)*((2*m)+2)*((2*m)+1)
@@ -507,7 +507,7 @@ colour = ["navy", "orangered", "forestgreen", "firebrick", "blueviolet", "steelb
 theor_func = []
 
 for j in range(len(g)):
-    arO = np.arange(g[j], np.amax(LogBin[j][0]+10), 0.01) 
+    arO = np.arange(g[j], np.amax(LogBin[j][0]+10), 1) 
     plt.plot(arO, func(arO, g[j]), '--', zorder=10, color = colour[j]) 
     
     theor_func.append(func(LogBin[j][0], g[j]))
