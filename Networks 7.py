@@ -11,7 +11,7 @@ CID: 01508466
 #%% WRITE
 import pickle
 
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAAAAAAA', 'wb') as dummy:
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\AAAAAAAAAAAAAAAA', 'wb') as dummy:
     pickle.dump(data, dummy, protocol=pickle.HIGHEST_PROTOCOL)
     
 #%% READ
@@ -27,7 +27,8 @@ import pickle
 # Rand4;8;16;32;64
 
 # Prefer100k50runs
-with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\32ii', 'rb') as dummy:
+# Data Files - Final\
+with open(r'C:\Users\44743\Documents\Imperial Year 3\Complexity & Networks\Mixed23100k50R64', 'rb') as dummy:
     data = pickle.load(dummy)
 
 #%%
@@ -106,7 +107,7 @@ def A(Iterations):
         Increment()
         Edge()
 #%%
-Nng = [3,5,9,17,33]
+Nng = [3,5,9,17,33,65]
 Nn = Nng[0] # m+1 nodes in system
 vertices = [i for i in range(1,Nn+1)]
 ver = vertices.copy()
@@ -122,26 +123,26 @@ wattachlist = np.concatenate(vertex_con).tolist()
 data = {}
 # R-1 is the number of separate networks simulated  
 # I is the number of single grain additions (i.e. total time)
-R = 101
-t = 10000
-t = np.array([128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072])
-g = np.array([2,4,8,16,32])#,16,32,64])
+R = 51
+t = 100000
+#t = np.array([128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072])
+g = np.array([2,4,8,16,32,64])#,16,32,64])
 #g = np.array([32])
-Nng = [3,5,9,17,33]
+Nng = [3,5,9,17,33,65]
 #Nng = [33]
 #g = np.array([1,2,3,4])
 # If Task 4, len(t), if other len(g) CHANGE BETWEEN t and g
-for j in range(len(t)):
+for j in range(len(g)):
     for h in range(1,R):
-        #Nn = Nng[j]
-        Nn = 3
+        Nn = Nng[j]
+        #Nn = 3
         #print(Nn)
-        #m = g[j]
-        m = 2
+        m = g[j]
+        #m = 2
         # q is the probability the edge is joined using preferential attachment 
         q = 2/3
-        A(t[j]) # A(t[j]) A(t)
-        data[t[j],h] = [degree, vertex_con]
+        A(t) # A(t[j]) A(t)
+        data[g[j],h] = [degree]#, vertex_con]
         
         # Condition to handle hitting the end of the list h
         # HASH THIS OUT FOR TASK 4
@@ -203,17 +204,18 @@ plt.legend()
 plt.show()
 #%%
 """ RELEVANT """
-scale = 1.3
+scale = 1.1
 s0 = False # whether or not to include s = 0 avalanches 
 
 bin2 = []
 bin4 = []
 bin8 = []
 bin16 = []
-bin32 = [] 
+bin32 = []
+bin64 = [] 
 
-A = ['bin2', 'bin4', 'bin8', 'bin16', 'bin32']
-binlist = [bin2, bin4, bin8, bin16, bin32]
+A = ['bin2', 'bin4', 'bin8', 'bin16', 'bin32', 'bin64']
+binlist = [bin2, bin4, bin8, bin16, bin32, bin64]
 #binlist = [bin32]
 
 R = 51
@@ -224,8 +226,10 @@ for h in range(1,R):
     bin8.append(logbin(data[8,h][0],scale))
     bin16.append(logbin(data[16,h][0],scale))
     bin32.append(logbin(data[32,h][0],scale))
+    bin64.append(logbin(data[64,h][0],scale))
 
-g = np.array([2,4,8,16,32])
+
+#g = np.array([2,4,8,16,32])
 #%%
 """ Maximum degree distribution; m = 2, N = 2^10 - 2^17 """
 scale = 1.2
@@ -267,7 +271,7 @@ for h in range(1,R):
     bin65536.append(logbin(data[65536,h][0],scale))
     bin131072.append(logbin(data[131072,h][0],scale))
 
-g = np.array([2,4,8,16,32])
+#g = np.array([2,4,8,16,32])
 #%%
 """ Maximum degree vs N """
 max128 = []
@@ -286,6 +290,7 @@ maxlist = [max128, max512, max2048, max8192, max32768, max131072]
 maxlist = [max128, max256, max512, max1024, max2048, max4096, max8192, max16384, 
            max32768, max65536, max131072]
 
+t = np.array([128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072])
 ts = [128, 512, 2048, 8192, 32768, 131072]
 R = 101
 
@@ -306,6 +311,7 @@ unbin4 = []
 unbin8 = []
 unbin16 = []
 unbin32 = [] 
+unbin64 = []
 
 for h in range(1,R):
     unbin2.append(data[2,h][0])
@@ -313,6 +319,7 @@ for h in range(1,R):
     unbin8.append(data[8,h][0])
     unbin16.append(data[16,h][0])
     unbin32.append(data[32,h][0])
+    unbin64.append(data[64,h][0])
 
 # Concatenate unbin lists 
 UnBin2 = np.concatenate(unbin2)
@@ -320,8 +327,9 @@ UnBin4 = np.concatenate(unbin4)
 UnBin8 = np.concatenate(unbin8)
 UnBin16 = np.concatenate(unbin16)
 UnBin32 = np.concatenate(unbin32)
+UnBin64 = np.concatenate(unbin64)
 
-UnBinlist = [UnBin2, UnBin4, UnBin8, UnBin16, UnBin32]
+UnBinlist = [UnBin2, UnBin4, UnBin8, UnBin16, UnBin32, UnBin64]
 #%%
 """ Fixed m, Variable N """
 unbin128 = []
@@ -372,6 +380,8 @@ UnBinlist = [unbin128, unbin512, unbin2048,
 #scale = 1.1 # SCALE NEEDS TO BE SET WITH THE ERRORS (i.e. scale needs to be same for both errors and this)
 s0 = False # whether or not to include s = 0 avalanches 
 # Fixed N variable m
+#g = np.array([2,4,8,16,32,64])
+
 LogBin = []
 for j in range(len(g)):
     LogBin.append(logbin(UnBinlist[j],scale))
@@ -397,17 +407,19 @@ for u in range(len(binlist)):
         xlist.append(binlist[u][h][0].tolist())
         ylist.append(binlist[u][h][1].tolist())
     Big_xlist = np.unique(np.concatenate(xlist, 0))
-    Sampl = []
     
+    Sampl = []
     for a in range(len(Big_xlist)):
         sample = []
         for v in range(len(ylist)):
             if Big_xlist[a] in xlist[v]:
-                sample.append(ylist[v][xlist[v].index(Big_xlist[a])])          
+                sample.append(ylist[v][xlist[v].index(Big_xlist[a])]) 
+            else: 
+                sample.append(0)
         Sampl.append(sample)  
+    """ Need to add zero entries to lists in Sampl until all at same length """
     err_y = []
     avg_y = []
-    
     for s in range(len(Sampl)):
         err_y.append(np.std(Sampl[s])/np.sqrt(np.size(Sampl[s])))
         avg_y.append(np.mean(Sampl[s]))
@@ -440,17 +452,20 @@ plt.figure()
 
 """ Combining different runs into a huge dataset which is logbinned to give x and y """
 
-plt.plot(LogBin[0][0], LogBin[0][1], 'x-', label = "m=2")
-plt.plot(LogBin[1][0], LogBin[1][1], 'x-', label = "m=4")
-plt.plot(LogBin[2][0], LogBin[2][1], 'x-', label = "m=8")
-plt.plot(LogBin[3][0], LogBin[3][1], 'x-', label = "m=16")
-plt.plot(LogBin[4][0], LogBin[4][1], 'x-', label = "m=32")
-
-plt.errorbar(LogBin[0][0], LogBin[0][1], yerr = errlist[0], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(LogBin[1][0], LogBin[1][1], yerr = errlist[1], color = "orange", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(LogBin[2][0], LogBin[2][1], yerr = errlist[2], color = "green", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(LogBin[3][0], LogBin[3][1], yerr = errlist[3], color = "crimson", fmt='o', mew=1, ms=0.2, capsize=6)
-plt.errorbar(LogBin[4][0], LogBin[4][1], yerr = errlist[4], color = "purple", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.plot(LogBin[0][0], LogBin[0][1], 'x-', label = "m=2")
+#plt.plot(LogBin[1][0], LogBin[1][1], 'x-', label = "m=4")
+#plt.plot(LogBin[2][0], LogBin[2][1], 'x-', label = "m=8")
+#plt.plot(LogBin[3][0], LogBin[3][1], 'x-', label = "m=16")
+#plt.plot(LogBin[4][0], LogBin[4][1], 'x-', label = "m=32")
+#plt.plot(LogBin[5][0], LogBin[5][1], 'x-', label = "m=64")
+#
+#
+#plt.errorbar(LogBin[0][0], LogBin[0][1], yerr = errlist[0], color = "royalblue", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.errorbar(LogBin[1][0], LogBin[1][1], yerr = errlist[1], color = "orange", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.errorbar(LogBin[2][0], LogBin[2][1], yerr = errlist[2], color = "green", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.errorbar(LogBin[3][0], LogBin[3][1], yerr = errlist[3], color = "crimson", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.errorbar(LogBin[4][0], LogBin[4][1], yerr = errlist[4], color = "purple", fmt='o', mew=1, ms=0.2, capsize=6)
+#plt.errorbar(LogBin[5][0], LogBin[5][1], yerr = errlist[5], color = "steelblue", fmt='o', mew=1, ms=0.2, capsize=6)
 
 
 #import math
@@ -473,9 +488,11 @@ def Rand_deg_dist(k, m):
     return y
 
 def Mixed_deg_dist_twothirds(k, m):
-    A = 3*((2*m)+3)*((2*m)+2)*((2*m)+1)
-    B = np.square(k+m+3)
-    C = B*(k+m+2)*(k+m+1)
+#    A = 3*((2*m)+3)*((2*m)+2)*((2*m)+1)
+    A = 6*m*(2*m+2)*(2*m+1)
+#    B = np.square(k+m+3)
+#    C = B*(k+m+2)*(k+m+1)
+    C = (k+m+3)*(k+m+2)*(k+m+1)*(k+m)
     return A/C
 
 def Mixed_deg_dist_onehalf(k, m):
@@ -484,8 +501,8 @@ def Mixed_deg_dist_onehalf(k, m):
     C = B*(k+m+2)*(k+m+1)
     return A/C
 
-func = Pref_deg_dist
-colour = ["navy", "orangered", "forestgreen", "firebrick", "blueviolet"]
+func = Rand_deg_dist    #Mixed_deg_dist_twothirds
+colour = ["navy", "orangered", "forestgreen", "firebrick", "blueviolet", "steelblue"]
 
 theor_func = []
 
@@ -493,7 +510,7 @@ for j in range(len(g)):
     arO = np.arange(g[j], np.amax(LogBin[j][0]+10), 0.01) 
     plt.plot(arO, func(arO, g[j]), '--', zorder=10, color = colour[j]) 
     
-    theor_func.append(func(arO, g[j]))
+    theor_func.append(func(LogBin[j][0], g[j]))
 
 
 plt.xlabel("Degree, $k$", size = "15")
@@ -530,15 +547,15 @@ colours = ["lightseagreen", "orangered", "forestgreen", "firebrick", "blueviolet
 #func = Rand_deg_dist
 
 for z in [5,4,3,2,1,0]:#range(len(t)-5):
-    #ycoll = func(LogBin[z][0], 2)
-    plt.plot(LogBin[z][0], LogBin[z][1], 'x-', color = colours[z], label = labels_redu[z])
-    plt.errorbar(LogBin[z][0], LogBin[z][1], yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
+    ycoll = func(LogBin[z][0], 2)
+#    plt.plot(LogBin[z][0], LogBin[z][1], 'x-', color = colours[z], label = labels_redu[z])
+#    plt.errorbar(LogBin[z][0], LogBin[z][1], yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
     # Data Collpase Preferential
 #    plt.plot(LogBin[z][0]/tlist[z], LogBin[z][1]/ycoll, 'x', color = colours[z], label = labels_redu[z])
 #    plt.errorbar(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
 #
-#    plt.plot(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, 'x', color = colours[z], label = labels_redu[z])
-#    plt.errorbar(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
+    plt.plot(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, 'x', color = colours[z], label = labels_redu[z])
+    plt.errorbar(LogBin[z][0]/trlist[z], LogBin[z][1]/ycoll, yerr = errlist[z], color = colours[z], fmt='o', mew=1, ms=0.2, capsize=6)
     
     
 #plt.plot(LogBin[0][0], LogBin[0][1], 'x-', label = "m=2")
